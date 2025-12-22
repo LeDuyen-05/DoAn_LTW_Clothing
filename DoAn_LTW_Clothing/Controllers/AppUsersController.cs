@@ -27,6 +27,10 @@ namespace DoAn_LTW_Clothing.Controllers
         {
             return View();
         }
+        public ActionResult DangNhapAdmin()
+        {
+            return View();
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DangKy(AppUser user, string ConfirmPassword)
