@@ -1,0 +1,155 @@
+﻿@model IEnumerable<DoAn_LTW_Clothing.Models.Product>
+
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+}
+
+@section styles {
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/plugins/jquery-ui-1.12.1.custom/jquery-ui.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/styles/categories_styles.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/styles/categories_responsive.css")">
+}
+
+<div class="container product_section_container">
+    <div class="row">
+        <div class="col product_section clearfix">
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul>
+                    <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+                    <li class="active"><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i>Shop</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar">
+                @Html.Action("DanhMuc", "Products")
+
+                <div class="sidebar_section">
+                    <div class="sidebar_title">
+                        <h5>Tìm kiếm & Lọc giá</h5>
+                    </div>
+
+                    <div class="sidebar_filter_form" style="margin-top: 15px;">
+                        @using (Html.BeginForm("Index", "Products", FormMethod.Get))
+                        {
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <input class="form-control" placeholder="Nhập tên sản phẩm..." name="kw" value="@Request.QueryString["kw"]"
+                                       style="font-size: 13px; border-radius: 0; border: 1px solid #e5e5e5; padding: 10px;">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <select class="form-control" name="khoanggia"
+                                        style="font-size: 13px; border-radius: 0; border: 1px solid #e5e5e5; height: 40px; cursor: pointer;">
+                                    <option value="all">-- Chọn mức giá --</option>
+                                    <option value="-300000">Dưới 300.000đ</option>
+                                    <option value="300000-500000">300.000đ - 500.000đ</option>
+                                    <option value="500000-1000000">500.000đ - 1.000.000đ</option>
+                                    <option value="-1000000">Trên 1.000.000đ</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="filter_button"
+                                    style="width: 100%; border: none; cursor: pointer; text-transform: uppercase;">
+                                <span>TÌM KIẾM</span>
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="main_content">
+
+                <div class="products_iso">
+                    <div class="row">
+                        <div class="col">
+
+                            <div class="product-grid">
+
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        // 1. LOGIC XÁC ĐỊNH CLASS ĐỂ LỌC (Men/Women/Accessories)
+                                        string cssClass = "accessories";
+                                        if (item.Category != null && item.Category.CategoryGroup != null)
+                                        {
+                                            // Lấy mã nhóm (GroupCode) từ DB cho chính xác
+                                            string groupCode = item.Category.CategoryGroup.GroupCode?.ToLower() ?? "";
+                                            string groupName = item.Category.CategoryGroup.GroupName?.ToLower() ?? "";
+
+                                            if (groupCode.Contains("men") || groupName.Contains("nam"))
+                                            {
+                                                cssClass = "men";
+                                            }
+                                            else if (groupCode.Contains("women") || groupName.Contains("nữ"))
+                                            {
+                                                cssClass = "women";
+                                            }
+                                        }
+
+                                        // 2. LOGIC LẤY GIÁ THẤP NHẤT
+                                        decimal price = 0;
+                                        if (item.ProductVariants != null && item.ProductVariants.Any())
+                                        {
+                                            price = item.ProductVariants.Min(v => v.Price);
+                                        }
+
+                                        // 3. HIỂN THỊ SẢN PHẨM
+                                        <div class="product-item @cssClass">
+                                            <div class="product discount product_filter" style="border: 1px solid #eee; height: 100%; display: flex; flex-direction: column;">
+
+                                                <div class="product_image" style="height: 230px; display: flex; align-items: center; justify-content: center; overflow: hidden; width: 100%;">
+                                                    <img src="@Url.Content("~/assets/images/" + (item.MainImage ?? "no-image.png"))"
+                                                         alt="@item.ProductName"
+                                                         style="max-height: 100%; max-width: 100%; width: auto; height: auto;">
+                                                </div>
+
+                                                <div class="favorite favorite_left"></div>
+
+                                                @if (item.IsActive == false)
+                                                {
+                                                    <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>Sold</span></div>
+                                                }
+
+                                                <div class="product_info" style="padding: 15px; text-align: center; flex-grow: 1;">
+                                                    <h6 class="product_name" style="height: 20px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; margin-bottom: 5px;">
+                                                        <a href="@Url.Action("Details", "Products", new { id = item.ProductId })">@item.ProductName</a>
+                                                    </h6>
+
+                                                    <div class="product_price" style="margin-top: 5px;">
+                                                        @(price > 0 ? price.ToString("#,##0", culture) + "₫" : "Liên hệ")
+                                                    </div>
+                                                </div>
+
+                                                <div class="red_button add_to_cart_button" style="visibility: visible !important; opacity: 1 !important; position: static !important; width: 100% !important; margin: 0 !important; border-radius: 0;">
+                                                    <a href="@Url.Action("AddToCart", "ShoppingCart", new { productId = item.ProductId, quantity = 1 })" style="display: block; width: 100%;">add to cart</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="col-12 text-center" style="margin-top: 50px;">
+                                        <p>Không tìm thấy sản phẩm nào phù hợp.</p>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="@Url.Content("~/assets/plugins/Isotope/isotope.pkgd.min.js")"></script>
+    <script src="@Url.Content("~/assets/plugins/OwlCarousel2-2.2.1/owl.carousel.js")"></script>
+    <script src="@Url.Content("~/assets/plugins/easing/easing.js")"></script>
+    <script src="@Url.Content("~/assets/plugins/jquery-ui-1.12.1.custom/jquery-ui.js")"></script>
+    <script src="@Url.Content("~/assets/js/categories_custom.js")"></script>
+}

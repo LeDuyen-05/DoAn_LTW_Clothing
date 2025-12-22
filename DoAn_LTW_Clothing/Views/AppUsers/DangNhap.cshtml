@@ -1,0 +1,173 @@
+﻿@{
+    ViewBag.Title = "Đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .login_section {
+        margin-top: 160px; /* Tránh header che */
+        margin-bottom: 80px;
+        min-height: 500px;
+    }
+
+    .login_box {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1); /* Bóng đổ mềm mại */
+        overflow: hidden; /* Bo tròn cả ảnh */
+    }
+
+    /* Cột Ảnh bên trái */
+    .login_bg_img {
+        /* Link ảnh mẫu (bạn có thể thay bằng ảnh trong thư mục assets của bạn) */
+        background-image: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        min-height: 100%;
+        position: relative;
+    }
+
+        /* Lớp phủ màu đen mờ lên ảnh để chữ nổi hơn nếu cần viết chữ lên ảnh */
+        .login_bg_img::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.1);
+        }
+
+    /* Form bên phải */
+    .login_form_content {
+        padding: 50px 40px;
+    }
+
+    .login_title {
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+        font-family: 'Poppins', sans-serif; /* Font hiện đại */
+    }
+
+    .login_subtitle {
+        color: #888;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+
+    /* Style cho ô nhập liệu */
+    .custom_input {
+        border: 2px solid #eee;
+        border-radius: 50px; /* Bo tròn kiểu viên thuốc */
+        padding: 12px 20px;
+        font-size: 14px;
+        background: #fcfcfc;
+        transition: 0.3s;
+    }
+
+        .custom_input:focus {
+            border-color: #fe4c50; /* Màu đỏ của Shop */
+            background: #fff;
+            box-shadow: none;
+            outline: none;
+        }
+
+    /* Nút đăng nhập */
+    .btn_login {
+        background: #fe4c50;
+        color: white;
+        border-radius: 50px;
+        padding: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        border: none;
+        box-shadow: 0 5px 15px rgba(254, 76, 80, 0.3); /* Bóng đổ màu đỏ */
+        transition: 0.3s;
+    }
+
+        .btn_login:hover {
+            background: #333;
+            transform: translateY(-2px); /* Hiệu ứng nhấn nút */
+            color: #fff;
+        }
+
+    .social-login a {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 50%;
+        display: inline-block;
+        background: #f1f1f1;
+        color: #333;
+        margin: 0 5px;
+        transition: 0.3s;
+    }
+
+        .social-login a:hover {
+            background: #fe4c50;
+            color: white;
+        }
+</style>
+
+<div class="container login_section">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="login_box">
+                <div class="row no-gutters">
+
+                    <div class="col-md-6 d-none d-md-block login_bg_img">
+                    </div>
+
+                    <div class="col-md-6 bg-white">
+                        <div class="login_form_content text-center">
+                            <h3 class="login_title">Chào mừng trở lại!</h3>
+                            @if (ViewBag.ThongBao != null)
+                            {
+                                <div class="alert alert-danger" role="alert" style="font-size: 14px;">
+                                    <i class="fa fa-exclamation-triangle"></i> @ViewBag.ThongBao
+                                </div>
+                            }
+                            <p class="login_subtitle">Vui lòng đăng nhập để tiếp tục mua sắm</p>
+
+                            @using (Html.BeginForm("DangNhap", "AppUsers", FormMethod.Post))
+                            {
+                                <div class="form-group text-left">
+                                    <input type="text" class="form-control custom_input" name="email" placeholder="Email của bạn..." required>
+                                </div>
+
+                                <div class="form-group text-left mt-3">
+                                    <input type="password" class="form-control custom_input" name="password" placeholder="Mật khẩu..." required>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-3 mb-4" style="font-size: 13px;">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                        <label class="custom-control-label" for="customCheck1">Ghi nhớ</label>
+                                    </div>
+                                    <a href="#" class="text-secondary">Quên mật khẩu?</a>
+                                </div>
+
+                                <button type="submit" class="btn btn-custom btn-block btn_login">ĐĂNG NHẬP</button>
+                            }
+
+                            <div class="mt-4 mb-3">
+                                <span class="text-muted small">Hoặc đăng nhập bằng</span>
+                            </div>
+
+                            <div class="social-login">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-google"></i></a>
+                            </div>
+
+                            <div class="mt-4 text-muted small">
+                                Bạn chưa có tài khoản? <a href="@Url.Action("DangKy", "AppUsers")" style="color: #fe4c50; font-weight: bold;">Đăng ký ngay</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

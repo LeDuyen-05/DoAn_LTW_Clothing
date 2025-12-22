@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8afb76e8d94140bfb4ac2c2752ef1843" Name="Diagram1" ZoomLevel="69">
+        <EntityTypeShape EntityType="ClothingShopModel.AppUser" Width="1.5" PointX="5.25" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.Cart" Width="1.5" PointX="5.25" PointY="16.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.CartItem" Width="1.5" PointX="7.5" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.Category" Width="1.5" PointX="3" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.CategoryGroup" Width="1.5" PointX="0.75" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.CustomerAddress" Width="1.5" PointX="7.5" PointY="27.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.Order" Width="1.5" PointX="8.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.OrderItem" Width="1.5" PointX="10.5" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.Payment" Width="1.5" PointX="10.5" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.Product" Width="1.5" PointX="5.25" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.ProductImage" Width="1.5" PointX="7.5" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.ProductReview" Width="1.5" PointX="7.5" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.ProductVariant" Width="1.5" PointX="7.5" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.ProductVariantStock" Width="1.5" PointX="9.75" PointY="23.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.sysdiagram" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.Voucher" Width="1.5" PointX="6" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingShopModel.Wishlist" Width="1.5" PointX="10.5" PointY="7.625" IsExpanded="true" />
+        <AssociationConnector Association="ClothingShopModel.FK_Address_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Cart_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Order_AppUser" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Review_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Wishlist_User" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_CartItem_Cart" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_CartItem_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Category_CategoryGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Product_Category" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Order_Voucher" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_OrderItem_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Payment_Order" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_OrderItem_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK__ProductVa__Produ__4F7CD00D" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_ProductImage_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Review_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK_Wishlist_Product" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingShopModel.FK__ProductVa__Varia__534D60F1" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

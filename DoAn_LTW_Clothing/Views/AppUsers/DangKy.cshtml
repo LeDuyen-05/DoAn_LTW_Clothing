@@ -1,0 +1,193 @@
+﻿@model DoAn_LTW_Clothing.Models.AppUser
+
+@{
+    ViewBag.Title = "Đăng Ký";
+    Layout = null; // Tắt layout cũ để chạy Bootstrap 5 độc lập
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - Colo Shop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f7f6;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .card-register {
+            background: white;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 550px; /* Độ rộng vừa phải cho form */
+            padding: 40px;
+            position: relative;
+        }
+
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+        }
+
+            .brand-logo span {
+                color: #fe4c50;
+            }
+
+        /* Style cho Floating Labels (Nhãn bay lên) */
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            color: #fe4c50;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #e1e1e1;
+            padding-left: 15px;
+        }
+
+            .form-control:focus {
+                border-color: #fe4c50;
+                box-shadow: 0 0 0 0.25rem rgba(254, 76, 80, 0.2);
+            }
+
+        .btn-register {
+            background-color: #fe4c50;
+            border-color: #fe4c50;
+            color: white;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 16px;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+            .btn-register:hover {
+                background-color: #333;
+                border-color: #333;
+                transform: translateY(-2px);
+                color: white !important;
+            }
+
+        .divider-text {
+            position: relative;
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+            .divider-text span {
+                padding: 7px;
+                font-size: 12px;
+                position: relative;
+                z-index: 2;
+                background-color: #fff;
+                color: #888;
+            }
+
+            .divider-text:after {
+                content: "";
+                position: absolute;
+                width: 100%;
+                border-bottom: 1px solid #ddd;
+                top: 55%;
+                left: 0;
+                z-index: 1;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <div class="card-register">
+
+            <div class="brand-logo">
+                Colo<span>Shop</span>
+            </div>
+
+            <h5 class="text-center text-muted mb-4" style="font-size: 15px;">Đăng ký thành viên mới</h5>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger d-flex align-items-center mb-3" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <small>@ViewBag.Error</small>
+                </div>
+            }
+
+            @using (Html.BeginForm("DangKy", "AppUsers", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="FullName" name="FullName" placeholder="Họ tên" required>
+                    <label for="FullName"><i class="fas fa-user me-2"></i>Họ và Tên</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="Email" name="Email" placeholder="name@example.com" required>
+                    <label for="Email"><i class="fas fa-envelope me-2"></i>Email</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="tel" class="form-control" id="Phone" name="Phone" placeholder="Số điện thoại" required>
+                    <label for="Phone"><i class="fas fa-phone me-2"></i>Số điện thoại</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="PasswordHash" name="PasswordHash" placeholder="Mật khẩu" required>
+                    <label for="PasswordHash"><i class="fas fa-lock me-2"></i>Mật khẩu</label>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Nhập lại mật khẩu" required>
+                    <label for="ConfirmPassword"><i class="fas fa-check-circle me-2"></i>Xác nhận mật khẩu</label>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-register btn-lg">ĐĂNG KÝ NGAY</button>
+                </div>
+            }
+
+            <div class="divider-text">
+                <span>Bạn đã có tài khoản?</span>
+            </div>
+
+            <div class="text-center">
+                <a href="@Url.Action("DangNhap", "AppUsers")" class="btn btn-outline-secondary w-100" style="border-radius: 10px;">Đăng nhập</a>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="@Url.Action("Index", "Home")" class="text-decoration-none text-muted small hover-red">
+                    <i class="fas fa-arrow-left me-1"></i> Quay về trang chủ
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewBag.Title - Colo Shop</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Colo Shop Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/plugins/OwlCarousel2-2.2.1/owl.carousel.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/plugins/OwlCarousel2-2.2.1/owl.theme.default.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/plugins/OwlCarousel2-2.2.1/animate.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/styles/main_styles.css")">
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/assets/styles/responsive.css")">
+
+    <style>
+        /* --- GIAO DIỆN TÌM KIẾM BÊN PHẢI (SIDE DRAWER) --- */
+
+        /* Lớp nền mờ khi mở tìm kiếm */
+        .search_sidebar_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Khung Sidebar bên phải */
+        .search_sidebar {
+            position: fixed;
+            top: 0;
+            right: -450px; /* Mặc định ẩn bên phải */
+            width: 450px;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            padding: 30px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        }
+
+        /* Hiệu ứng khi Checkbox được tích */
+        #search_toggle:checked ~ .search_sidebar {
+            right: 0;
+        }
+
+        #search_toggle:checked ~ .search_sidebar_overlay {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Giao diện nút đóng & ô nhập liệu bên trong sidebar */
+        .search_sidebar_header {
+            margin-bottom: 30px;
+        }
+
+        .search_close_btn {
+            cursor: pointer;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .search_field_box {
+            background: #f5f5f5;
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+            .search_field_box i {
+                color: #888;
+                margin-right: 15px;
+            }
+
+            .search_field_box input {
+                border: none;
+                background: transparent;
+                width: 100%;
+                outline: none;
+                font-size: 15px;
+            }
+
+        /* Gợi ý tìm kiếm */
+        .search_sidebar_body h6 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 30px;
+            text-transform: uppercase;
+            color: #1e1e27;
+        }
+
+        .search_recent_list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+            .search_recent_list li {
+                margin-bottom: 12px;
+            }
+
+                .search_recent_list li a {
+                    color: #555;
+                    font-size: 15px;
+                }
+
+                    .search_recent_list li a:hover {
+                        color: #fe4c50;
+                    }
+
+        .btn_clear_all {
+            border: none;
+            background: transparent;
+            color: #b5aec4;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Đảm bảo nội dung không bị Header đè */
+        .main_content_container {
+            margin-top: 160px;
+            min-height: 600px;
+        }
+
+        @@media (max-width: 575px) {
+            .search_sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+
+    @RenderSection("styles", required: false)
+</head>
+<body>
+
+    @{
+        int cartCount = 0;
+        if (Session["Cart"] != null)
+        {
+            var cart = Session["Cart"] as List<DoAn_LTW_Clothing.Models.CartItem>;
+            if (cart != null) { cartCount = cart.Sum(x => x.Quantity); }
+        }
+    }
+
+    <div class="super_container">
+
+        <input type="checkbox" id="search_toggle" style="display: none;" />
+        <label for="search_toggle" class="search_sidebar_overlay"></label>
+
+        <div class="search_sidebar">
+            <div class="search_sidebar_header">
+                <label for="search_toggle" class="search_close_btn">
+                    <i class="fa fa-arrow-left"></i>
+                </label>
+            </div>
+
+            <div class="search_sidebar_body">
+                @using (Html.BeginForm("Index", "Products", FormMethod.Get))
+                {
+                    <div class="search_field_box">
+                        <i class="fa fa-search"></i>
+                        <input type="text" name="kw" placeholder="Tìm kiếm sản phẩm" autocomplete="off">
+                    </div>
+                }
+            </div>
+        </div>
+
+        <header class="header trans_300">
+            <div class="top_nav">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="top_nav_left">free shipping on all orders over 500k</div>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="top_nav_right">
+                                <ul class="top_nav_menu">
+                                    <li class="account">
+                                        @if (Session["TaiKhoan"] != null)
+                                        {
+                                            var user = Session["TaiKhoan"] as DoAn_LTW_Clothing.Models.AppUser;
+                                            <a href="#">Hello, @(user != null ? user.FullName : "User") <i class="fa fa-angle-down"></i></a>
+                                            <ul class="account_selection">
+                                                <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i> Profile</a></li>
+                                                <li><a href="@Url.Action("LogOff", "AppUsers")"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a></li>
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <a href="#">My Account <i class="fa fa-angle-down"></i></a>
+                                            <ul class="account_selection">
+                                                <li><a href="@Url.Action("DangNhap", "AppUsers")"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>
+                                                <li><a href="@Url.Action("DangKy", "AppUsers")"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a></li>
+                                            </ul>
+                                        }
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main_nav_container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 text-right">
+                            <div class="logo_container">
+                                <a href="@Url.Action("Index", "Home")">colo<span>shop</span></a>
+                            </div>
+                            <nav class="navbar">
+                                <ul class="navbar_menu">
+                                    <li><a href="@Url.Action("Index", "Home")">Home</a></li>
+                                    <li><a href="@Url.Action("Index", "Products")">Product</a></li>
+                                    <li><a href="#">promotion</a></li>
+                                    <li><a href="#">blog</a></li>
+                                    <li><a href="@Url.Action("Contact", "Home")">Contact</a></li>
+                                </ul>
+                                <ul class="navbar_user">
+                                    <li>
+                                        <label for="search_toggle" style="cursor: pointer; margin-bottom: 0; vertical-align: middle;">
+                                            <i class="fa fa-search" aria-hidden="true"></i>
+                                        </label>
+                                    </li>
+                                    <li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                                    <li class="checkout">
+                                        <a href="@Url.Action("Index", "ShoppingCart")">
+                                            <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                            <span id="checkout_items" class="checkout_items">@cartCount</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="hamburger_container">
+                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="fs_menu_overlay"></div>
+        <div class="hamburger_menu">
+            <div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
+            <div class="hamburger_menu_content text-right">
+                <ul class="menu_top_nav">
+                    <li class="menu_item"><a href="@Url.Action("Index", "Home")">home</a></li>
+                    <li class="menu_item"><a href="@Url.Action("Index", "Products")">shop</a></li>
+                    <li class="menu_item"><a href="#">contact</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main_content_container">
+            @RenderBody()
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
+                            <ul class="footer_nav">
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">FAQs</a></li>
+                                <li><a href="#">Contact us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="footer_social d-flex flex-row align-items-center justify-content-lg-end justify-content-center">
+                            <ul>
+                                <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="footer_nav_container">
+                            <div class="cr">©2025 All Rights Reserved.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="@Url.Content("~/assets/styles/bootstrap4/popper.js")"></script>
+    <script src="@Url.Content("~/assets/styles/bootstrap4/bootstrap.min.js")"></script>
+    <script src="@Url.Content("~/assets/plugins/Isotope/isotope.pkgd.min.js")"></script>
+    <script src="@Url.Content("~/assets/plugins/OwlCarousel2-2.2.1/owl.carousel.js")"></script>
+    <script src="@Url.Content("~/assets/plugins/easing/easing.js")"></script>
+    <script src="@Url.Content("~/assets/js/custom.js")"></script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
