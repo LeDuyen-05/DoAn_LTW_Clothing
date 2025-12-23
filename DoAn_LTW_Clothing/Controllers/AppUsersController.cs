@@ -90,7 +90,7 @@ namespace DoAn_LTW_Clothing.Controllers
                 if (user != null && user.Role == "Admin")
                 {
                     Session["Admin"] = user;
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "admin");
                 }
                 else
                 {
