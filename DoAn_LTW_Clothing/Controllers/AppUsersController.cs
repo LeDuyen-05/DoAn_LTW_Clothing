@@ -60,6 +60,7 @@ namespace DoAn_LTW_Clothing.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DangNhap(string email, string password)
         {
             if (ModelState.IsValid)
@@ -68,8 +69,18 @@ namespace DoAn_LTW_Clothing.Controllers
 
                 if (user != null)
                 {
-                    Session["TaiKhoan"] = user;
-                    Session["HoTen"] = user.FullName;
+                    Session["UserId"] = user.UserId;   
+                    Session["TaiKhoan"] = user;        
+                    Session["HoTen"] = user.FullName;  
+
+                    if (Session["ReturnUrl"] != null)
+                    {
+                        string url = Session["ReturnUrl"].ToString();
+                        Session.Remove("ReturnUrl");
+                        return Redirect(url);
+                    }
+
+                    // Mặc định quay về trang Home
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -77,8 +88,8 @@ namespace DoAn_LTW_Clothing.Controllers
                     ViewBag.ThongBao = "Tên đăng nhập hoặc mật khẩu không đúng!";
                 }
             }
-            return View();
 
+            return View();
         }
         [HttpPost]
         public ActionResult DangNhapAdmin(string email, string password)
@@ -102,12 +113,11 @@ namespace DoAn_LTW_Clothing.Controllers
         }
         public ActionResult LogOff()
         {
-            // Xóa Session
-            Session["User"] = null;
+            Session["UserId"] = null;
+            Session["TaiKhoan"] = null;
             Session["HoTen"] = null;
-            Session["Cart"] = null; // Xóa giỏ hàng khi đăng xuất (tùy chọn)
+            Session["CartId"] = null;
 
-            // Quay về trang chủ
             return RedirectToAction("Index", "Home");
         }
         // GET: AppUsers/Details/5

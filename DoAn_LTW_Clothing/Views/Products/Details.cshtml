@@ -219,49 +219,49 @@
                 <div class="product_details_title"><h2>@Model.ProductName</h2><p>@Model.Summary</p></div>
                 <div class="product_price">@price.ToString("#,##0") ₫</div>
 
-                @using (Html.BeginForm("AddToCart", "ShoppingCart", FormMethod.Post, new { id = "addToCartForm" }))
+                @using (Html.BeginForm("AddToCart", "ShoppingCart", FormMethod.Post))
                 {
-                    <input type="hidden" name="productId" value="@Model.ProductId" />
-
                     if (Model.ProductVariants != null && Model.ProductVariants.Any())
                     {
-                        var sizes = Model.ProductVariants.Select(x => x.Size).Distinct().ToList();
-                        var colors = Model.ProductVariants.Select(x => x.Color).Distinct().ToList();
+                        <div class="option_section" style="margin-top:20px;">
+                            <span class="option_title" style="font-weight:bold; display:block; margin-bottom:10px;">
+                                Chọn loại
+                            </span>
 
-                        /* --- PHẦN SIZE (Dùng Radio Button) --- */
-                        <div class="option_section" style="margin-top: 20px;">
-                            <span class="option_title" style="font-weight:bold; display:block; margin-bottom:10px;">Size</span>
-                            <div>
-                                @for (int i = 0; i < sizes.Count; i++)
-                                {
-                                    <input type="radio" id="size_@i" name="size" value="@sizes[i]" class="option-input" @(i == 0 ? "checked" : "") />
+                            @for (int i = 0; i < Model.ProductVariants.Count; i++)
+                            {
+                                var v = Model.ProductVariants.ElementAt(i);
 
-                                    <label for="size_@i" class="option-label">@sizes[i]</label>
-                                }
-                            </div>
-                        </div>
+                                <input type="radio"
+                                       id="variant_@i"
+                                       name="variantId"
+                                       value="@v.VariantId"
+                                       class="option-input"
+                                       @(i == 0 ? "checked" : "") />
 
-                        /* --- PHẦN MÀU SẮC (Dùng Radio Button) --- */
-                        <div class="option_section">
-                            <span class="option_title" style="font-weight:bold; display:block; margin-bottom:10px;">Màu sắc</span>
-                            <div>
-                                @for (int i = 0; i < colors.Count; i++)
-                                {
-                                    <input type="radio" id="color_@i" name="color" value="@colors[i]" class="option-input" @(i == 0 ? "checked" : "") />
-                                    <label for="color_@i" class="option-label">@colors[i]</label>
-                                }
-                            </div>
+                                <label for="variant_@i" class="option-label">
+                                    @v.Size - @v.Color
+                                </label>
+                            }
                         </div>
                     }
 
                     <div class="quantity d-flex flex-column flex-sm-row align-items-sm-center" style="margin-top: 30px;">
                         <span>Quantity:</span>
                         <div class="d-flex align-items-center">
-                            <input type="number" name="quantity" value="1" min="1" style="width: 60px; height: 50px; text-align: center; border: 1px solid #ddd; margin-right: 20px; margin-left: 10px;">
-                            <button type="submit" class="add_to_cart_button">ADD TO CART</button>
+                            <input type="number"
+                                   name="quantity"
+                                   value="1"
+                                   min="1"
+                                   style="width: 60px; height: 50px; text-align: center; border: 1px solid #ddd; margin-right: 20px; margin-left: 10px;">
+
+                            <button type="submit" class="add_to_cart_button">
+                                ADD TO CART
+                            </button>
                         </div>
                     </div>
                 }
+
             </div>
         </div>
     </div>
