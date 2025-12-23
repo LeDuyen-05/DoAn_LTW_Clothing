@@ -1,0 +1,84 @@
+﻿@model DoAn_LTW_Clothing.Models.Product
+
+@{
+    ViewBag.Title = "Xóa sản phẩm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <h2 class="text-primary fw-bold mb-3">Xóa sản phẩm</h2>
+    <h5 class="text-muted mb-4">Bạn có chắc chắn muốn xóa sản phẩm này không?</h5>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Thông tin sản phẩm</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ProductName)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ProductName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Slug)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Slug)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Material)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Material)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.MainImage)</dt>
+                <dd class="col-sm-9">
+                    <img src="~/assets/images/@Model.MainImage"
+                         alt="@Model.ProductName"
+                         class="img-thumbnail"
+                         style="width: 100px; height: 100px; object-fit: cover;"
+                         onerror="this.src='https://placehold.co/100x100?text=No+Image'" />
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Summary)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Summary)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.IsActive)</dt>
+                <dd class="col-sm-9">
+                    @if (Model.IsActive == true)
+                    {
+                        <span class="badge bg-success">Hiển thị</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Ẩn</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedAt)</dt>
+                <dd class="col-sm-9">
+                    @if (Model.CreatedAt.HasValue)
+                    {
+                        @Model.CreatedAt.Value.ToString("dd/MM/yyyy")
+                    }
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.UpdatedAt)</dt>
+                <dd class="col-sm-9">
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        @Model.UpdatedAt.Value.ToString("dd/MM/yyyy")
+                    }
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Category.CatSlug)</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-info text-dark">@Html.DisplayFor(model => model.Category.CatSlug)</span>
+                </dd>
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <hr />
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">Quay lại</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

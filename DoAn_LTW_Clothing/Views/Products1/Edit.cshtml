@@ -1,0 +1,137 @@
+﻿@model DoAn_LTW_Clothing.Models.Product
+
+@{
+    ViewBag.Title = "Cập nhật sản phẩm";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">Cập nhật sản phẩm</h2>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            @using (Html.BeginForm("Edit", "Products1", FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.HiddenFor(model => model.ProductId)
+                @Html.HiddenFor(model => model.MainImage)
+
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.CategoryId, "Danh mục", htmlAttributes: new { @class = "form-label fw-bold" })
+                            @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-select" })
+                            @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.ProductName, "Tên sản phẩm", htmlAttributes: new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", placeholder = "Nhập tên sản phẩm" } })
+                            @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.Slug, "Slug (URL)", htmlAttributes: new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.Slug, new { htmlAttributes = new { @class = "form-control", placeholder = "vd: ao-thun-nam" } })
+                            @Html.ValidationMessageFor(model => model.Slug, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.Material, "Chất liệu", htmlAttributes: new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.Material, new { htmlAttributes = new { @class = "form-control", placeholder = "Nhập chất liệu" } })
+                            @Html.ValidationMessageFor(model => model.Material, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.MainImage, "Hình ảnh", htmlAttributes: new { @class = "form-label fw-bold" })
+
+                            <div class="mb-2">
+                                <img src="~/assets/images/@Model.MainImage" alt="Ảnh hiện tại" class="img-thumbnail" style="max-height: 100px;" onerror="this.style.display='none'" />
+                                <span class="text-muted small fst-italic ms-2">Ảnh hiện tại: @Model.MainImage</span>
+                            </div>
+
+                            <input type="file" name="ImageUpload" class="form-control" />
+                            @Html.ValidationMessageFor(model => model.MainImage, "", new { @class = "text-danger small" })
+                            <small class="text-muted">Chọn ảnh mới để thay đổi (hoặc để trống nếu giữ nguyên)</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Trạng thái</label>
+                            <div class="form-check" style="margin-left: 40px; margin-top: 35px;">
+                                @Html.CheckBoxFor(model => model.IsActive, new { @class = "form-check-input" })
+                                <label class="form-check-label" for="IsActive">
+                                    Hiển thị sản phẩm
+                                </label>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger small d-block mt-1" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.Summary, "Mô tả ngắn", htmlAttributes: new { @class = "form-label fw-bold" })
+                            @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", rows = "3", placeholder = "Nhập mô tả ngắn về sản phẩm" })
+                            @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+
+                    @*<div class="col-md-6">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.CreatedAt, "Ngày tạo", htmlAttributes: new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.CreatedAt, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.CreatedAt, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.UpdatedAt, "Ngày cập nhật gần nhất", htmlAttributes: new { @class = "form-label fw-bold" })
+                            @Html.EditorFor(model => model.UpdatedAt, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.UpdatedAt, "", new { @class = "text-danger small" })
+                        </div>
+                    </div>*@
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <hr />
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="@Url.Action("Index")" class="btn btn-secondary px-4">
+                                <i class="bi bi-x-circle"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-warning px-4 text-white">
+                                <i class="bi bi-save"></i> Cập nhật
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
