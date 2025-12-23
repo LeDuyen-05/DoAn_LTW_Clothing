@@ -13,5 +13,14 @@ namespace DoAn_LTW_Clothing.Controllers
         {
             return View();
         }
+
+        public ActionResult GetCategorys()
+        {
+            return View();
+        }
+        public ActionResult CreateCategorys()
+        {
+            return View();
+        }
     }
 }

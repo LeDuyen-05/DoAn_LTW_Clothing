@@ -371,6 +371,7 @@
     <Content Include="assets\images\tui_nu_detail.jpg" />
     <Content Include="assets\images\tui_nu_model.jpg" />
     <Content Include="assets\js\categories_custom.js" />
+    <Content Include="assets\js\category.js" />
     <Content Include="assets\js\chart.js" />
     <Content Include="assets\js\Chart.roundedBarCharts.js" />
     <Content Include="assets\js\codemirror.js" />
@@ -385,11 +386,13 @@
     <Content Include="assets\js\off-canvas.js" />
     <Content Include="assets\js\select.dataTables.min.css" />
     <Content Include="assets\js\select2.js" />
+    <Content Include="assets\js\Services\categoryServices.js" />
     <Content Include="assets\js\settings.js" />
     <Content Include="assets\js\single_custom.js" />
     <Content Include="assets\js\template.js" />
     <Content Include="assets\js\todolist.js" />
     <Content Include="assets\js\typeahead.js" />
+    <Content Include="assets\js\Utils\request.js" />
     <Content Include="assets\plugins\easing\easing.js" />
     <Content Include="assets\plugins\font-awesome-4.7.0\css\font-awesome.css" />
     <Content Include="assets\plugins\font-awesome-4.7.0\css\font-awesome.min.css" />
@@ -1281,6 +1284,8 @@
     <Content Include="Views\Products1\Details.cshtml" />
     <Content Include="Views\Products1\Edit.cshtml" />
     <Content Include="Views\Products1\Index.cshtml" />
+    <Content Include="Views\Admin\GetCategorys.cshtml" />
+    <Content Include="Views\Admin\CreateCategorys.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
