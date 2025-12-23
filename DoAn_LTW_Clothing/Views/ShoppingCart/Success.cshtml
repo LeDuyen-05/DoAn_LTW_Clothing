@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Đặt hàng thành công";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" style="margin-top:60px; margin-bottom:60px">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 text-center">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h3 class="text-success mb-3">🎉 Đặt hàng thành công!</h3>
+
+                    <p>Cảm ơn bạn đã mua sắm tại cửa hàng.</p>
+                    <p>Đơn hàng của bạn sẽ được xử lý trong thời gian sớm nhất.</p>
+
+                    <a href="@Url.Action("Index","Products")"
+                       class="btn btn-outline-primary mt-3">
+                        Tiếp tục mua sắm
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
