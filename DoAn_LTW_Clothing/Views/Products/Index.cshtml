@@ -46,7 +46,7 @@
                                     <option value="-300000">Dưới 300.000đ</option>
                                     <option value="300000-500000">300.000đ - 500.000đ</option>
                                     <option value="500000-1000000">500.000đ - 1.000.000đ</option>
-                                    <option value="-1000000">Trên 1.000.000đ</option>
+                                    <option value="1000000-">Trên 1.000.000đ</option>
                                 </select>
                             </div>
 
@@ -124,7 +124,10 @@
                                                 </div>
 
                                                 <div class="red_button add_to_cart_button" style="visibility: visible !important; opacity: 1 !important; position: static !important; width: 100% !important; margin: 0 !important; border-radius: 0;">
-                                                    <a href="@Url.Action("AddToCart", "ShoppingCart", new { productId = item.ProductId, quantity = 1 })" style="display: block; width: 100%;">add to cart</a>
+                                                    <a href="@Url.Action("Details", "Products", new { id = item.ProductId })"
+                                                       style="display: block; width: 100%;">
+                                                        DETAIL
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

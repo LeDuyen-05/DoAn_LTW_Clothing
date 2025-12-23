@@ -132,6 +132,7 @@
 
                             @using (Html.BeginForm("DangNhap", "AppUsers", FormMethod.Post))
                             {
+                                @Html.AntiForgeryToken()
                                 <div class="form-group text-left">
                                     <input type="text" class="form-control custom_input" name="email" placeholder="Email của bạn..." required>
                                 </div>
