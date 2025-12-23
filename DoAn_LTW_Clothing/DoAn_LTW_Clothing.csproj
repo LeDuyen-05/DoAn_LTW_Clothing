@@ -160,7 +160,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AppUsersController.cs" />
+    <Compile Include="Controllers\CategoriesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Products1Controller.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\TestApiController.cs" />
     <Compile Include="Global.asax.cs">
@@ -181,6 +183,7 @@
     <Compile Include="Models\CategoryGroup.cs">
       <DependentUpon>ClothingShop.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\ClothingShop.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1273,6 +1276,11 @@
     <Content Include="Views\AppUsers\DangNhapAdmin.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutAdmin.cshtml" />
+    <Content Include="Views\Products1\Create.cshtml" />
+    <Content Include="Views\Products1\Delete.cshtml" />
+    <Content Include="Views\Products1\Details.cshtml" />
+    <Content Include="Views\Products1\Edit.cshtml" />
+    <Content Include="Views\Products1\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
