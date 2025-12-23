@@ -80,6 +80,26 @@ namespace DoAn_LTW_Clothing.Controllers
             return View();
 
         }
+        [HttpPost]
+        public ActionResult DangNhapAdmin(string email, string password)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = db.AppUsers.FirstOrDefault(s => s.Email == email && s.PasswordHash == password);
+
+                if (user != null && user.Role == "Admin")
+                {
+                    Session["Admin"] = user;
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ViewBag.ThongBao = "Tên đăng nhập hoặc mật khẩu không đúng!";
+                }
+            }
+            return View();
+
+        }
         public ActionResult LogOff()
         {
             // Xóa Session
