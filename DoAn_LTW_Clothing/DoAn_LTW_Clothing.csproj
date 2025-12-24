@@ -203,6 +203,7 @@
     <Compile Include="Models\CustomerAddress.cs">
       <DependentUpon>ClothingShop.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HomeAdmin.cs" />
     <Compile Include="Models\HomeVM.cs" />
     <Compile Include="Models\Order.cs">
       <DependentUpon>ClothingShop.tt</DependentUpon>
