@@ -300,7 +300,7 @@
                             <div class="product-info-red">
                                 <h6 class="product-title-red"><a href="@Url.Action("Details", "Products", new { id = item.ProductId })">@item.ProductName</a></h6>
                                 <div class="product-price-red">@rPrice.ToString("#,##0")<span>₫</span></div>                            </div>
-                            <a href="@Url.Action("AddToCart", "ShoppingCart", new { productId = item.ProductId, quantity = 1 })" class="btn-add-cart-red-block">ADD TO CART</a>
+                            <a href="@Url.Action("Details", "Products", new { productId = item.ProductId, quantity = 1 })" class="btn-add-cart-red-block">ADD TO CART</a>
                         </div>
                     </div>
                 }
