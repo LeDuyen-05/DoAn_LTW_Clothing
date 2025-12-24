@@ -28,7 +28,7 @@
                 <div class="col-md-4">
                     <div class="banner_item align-items-center" style="background-image:url('@Url.Content("~/assets/images/banner_" + item.CategoryId + ".jpg")')">
                         <div class="banner_category">
-                            <a href="@Url.Action("ProductByCategory", "Products", new { id = item.CategoryId })">
+                            <a href="@Url.Action("Index", "Products", new { id = item.CategoryId })">
                                 @item.CatName
                             </a>
                         </div>
