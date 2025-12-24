@@ -11,7 +11,7 @@ namespace DoAn_LTW_Clothing.Controllers
     {
         ClothingShopEntities db = new ClothingShopEntities();
 
-        // ================== LẤY HOẶC TẠO CART ==================
+        // LẤY HOẶC TẠO CART
         private int GetOrCreateCartId()
         {
             if (Session["CartId"] != null)
@@ -31,7 +31,7 @@ namespace DoAn_LTW_Clothing.Controllers
         }
 
 
-        // ================== XEM GIỎ HÀNG ==================
+        // XEM GIỎ HÀNG
         public ActionResult Index()
         {
             int cartId = GetOrCreateCartId();
@@ -44,7 +44,7 @@ namespace DoAn_LTW_Clothing.Controllers
             return View(items);
         }
 
-        // ================== THÊM VÀO GIỎ ==================
+        // THÊM VÀO GIỎ
         [HttpPost]
         public ActionResult AddToCart(int variantId, int quantity)
         {
@@ -84,7 +84,7 @@ namespace DoAn_LTW_Clothing.Controllers
             return RedirectToAction("Index");
         }
 
-        // ================== XÓA 1 SẢN PHẨM ==================
+        // XÓA SẢN PHẨM
         public ActionResult Remove(int id)
         {
             var item = db.CartItems.Find(id);
@@ -96,7 +96,7 @@ namespace DoAn_LTW_Clothing.Controllers
             return RedirectToAction("Index");
         }
 
-        // ================== CẬP NHẬT SỐ LƯỢNG ==================
+        // CẬP NHẬT SỐ LƯỢNG
         [HttpPost]
         public ActionResult Update(int id, int quantity)
         {
@@ -111,7 +111,6 @@ namespace DoAn_LTW_Clothing.Controllers
 
         public ActionResult CheckOut()
         {
-            // 🔐 CHƯA ĐĂNG NHẬP
             if (Session["UserId"] == null)
             {
                 // Lưu lại URL hiện tại để login xong quay về
@@ -135,7 +134,8 @@ namespace DoAn_LTW_Clothing.Controllers
         }
 
         [HttpPost]
-        public ActionResult CheckOut(string FullName, string Phone, string Address, string Note)
+        [ValidateAntiForgeryToken]
+        public ActionResult CheckOut(string FullName, string Phone, string Address, string Note, string PaymentMethod)
         {
             if (Session["UserId"] == null)
                 return RedirectToAction("DangNhap", "AppUsers");
@@ -144,23 +144,122 @@ namespace DoAn_LTW_Clothing.Controllers
             if (cartId == null)
                 return RedirectToAction("Index");
 
-            // TODO: Lưu Order (nâng cao)
-            var cartItems = db.CartItems.Where(c => c.CartId == cartId).ToList();
-            db.CartItems.RemoveRange(cartItems);
+            var cartItems = db.CartItems
+                              .Include(c => c.Product)
+                              .Where(c => c.CartId == cartId)
+                              .ToList();
 
-            var cart = db.Carts.Find(cartId);
-            if (cart != null)
-                db.Carts.Remove(cart);
+            if (!cartItems.Any())
+                return RedirectToAction("Index");
+
+            // KIỂM TRA TỒN KHO
+            foreach (var item in cartItems)
+            {
+                var variant = db.ProductVariants
+                                .FirstOrDefault(v => v.ProductId == item.ProductId && (v.Size + " - " + v.Color) == item.Note);
+                var stock = db.ProductVariantStocks.Find(variant?.VariantId);
+                if (stock == null || stock.Stock < item.Quantity)
+                {
+                    TempData["ErrorMessage"] = $"Sản phẩm {item.Product.ProductName} ({item.Note}) không đủ tồn kho!";
+                    return RedirectToAction("Index");
+                }
+            }
+
+            // Tạo Order
+            var order = new Order
+            {
+                UserId = (int)Session["UserId"],
+                CustomerName = FullName,
+                Phone = Phone,
+                AddressLine = Address,
+                Note = Note,
+                Status = PaymentMethod == "Online" ? "Paid" : "New", // Online thanh toán trực tuyến, COD để New
+                TotalAmount = cartItems.Sum(c => c.UnitPrice * c.Quantity),
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
+            };
+            db.Orders.Add(order);
+            db.SaveChanges();
+
+            // Tạo OrderItem và trừ kho
+            foreach (var item in cartItems)
+            {
+                db.OrderItems.Add(new OrderItem
+                {
+                    OrderId = order.OrderId,
+                    ProductId = item.ProductId,
+                    ProductName = item.Product.ProductName,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    Note = item.Note
+                });
+
+                var variant = db.ProductVariants.FirstOrDefault(v => v.ProductId == item.ProductId && (v.Size + " - " + v.Color) == item.Note);
+                if (variant != null)
+                {
+                    var stock = db.ProductVariantStocks.Find(variant.VariantId);
+                    if (stock != null)
+                    {
+                        stock.Stock -= item.Quantity;
+                        if (stock.Stock < 0) stock.Stock = 0;
+                    }
+                }
+            }
 
             db.SaveChanges();
-            Session.Remove("CartId");
 
-            return RedirectToAction("Success");
+            // Nếu thanh toán Online, tạo Payment và chuyển sang trang Payment
+            if (PaymentMethod == "Online")
+            {
+                var payment = new Payment
+                {
+                    OrderId = order.OrderId,
+                    PaymentMethod = "Ví điện tử", // hoặc "Chuyển khoản", tùy chọn bạn gửi từ form
+                    Amount = order.TotalAmount,
+                    Status = "Paid",
+                    PaymentDate = DateTime.Now
+                };
+                db.Payments.Add(payment);
+                db.SaveChanges();
+
+                // Xóa giỏ hàng
+                db.CartItems.RemoveRange(cartItems);
+                var cart = db.Carts.Find(cartId);
+                if (cart != null) db.Carts.Remove(cart);
+                db.SaveChanges();
+                Session.Remove("CartId");
+
+                return RedirectToAction("Payment", new { orderId = order.OrderId });
+            }
+            else // COD
+            {
+                db.CartItems.RemoveRange(cartItems);
+                var cart = db.Carts.Find(cartId);
+                if (cart != null) db.Carts.Remove(cart);
+                db.SaveChanges();
+                Session.Remove("CartId");
+
+                return RedirectToAction("Success");
+            }
         }
 
-        // =========================
-        // SUCCESS
-        // =========================
+
+        public ActionResult Payment(int orderId)
+        {
+            var order = db.Orders.Include(o => o.OrderItems.Select(oi => oi.Product))
+                                 .FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null) return HttpNotFound();
+
+            var payment = db.Payments.FirstOrDefault(p => p.OrderId == orderId);
+            if (payment == null) return HttpNotFound();
+
+            ViewBag.PaymentMethod = payment.PaymentMethod;
+            ViewBag.OrderCode = order.OrderId; // hoặc order.OrderCode nếu có
+            ViewBag.TotalAmount = order.TotalAmount;
+
+            return View(order.OrderItems.ToList());
+        }
+
         public ActionResult Success()
         {
             return View();

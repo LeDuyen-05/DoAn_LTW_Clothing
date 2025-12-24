@@ -1,0 +1,58 @@
+﻿@model List<DoAn_LTW_Clothing.Models.OrderItem>
+
+@{
+    ViewBag.Title = "Thanh toán đơn hàng";
+
+    string method = ViewBag.PaymentMethod as string ?? "";
+    string madon = ViewBag.OrderCode != null ? ViewBag.OrderCode.ToString() : "Đơn #" + (ViewBag.OrderId ?? 0);
+    decimal total = ViewBag.TotalAmount != null ? (decimal)ViewBag.TotalAmount : 0;
+
+    string qrSrc = Url.Content("~/assets/images/maqr.jpg"); // QR mặc định của bạn
+    string methodDisplay = "Thanh toán trực tuyến";
+
+    if (method == "Chuyển khoản")
+    {
+        methodDisplay = "Chuyển khoản ngân hàng";
+    }
+    else if (method == "Ví điện tử")
+    {
+        methodDisplay = "Ví điện tử";
+    }
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-4">
+
+                    <h3 class="mb-3">Thanh toán đơn hàng</h3>
+
+                    <p class="mb-1">Mã đơn: <span class="fw-bold text-primary">@madon</span></p>
+                    <p class="mb-3">Phương thức: <span class="fw-bold">@methodDisplay</span></p>
+
+                    <hr />
+
+                    <h5 class="mb-3">Quét mã QR để thanh toán</h5>
+
+                    <div class="d-flex justify-content-center mb-3">
+                        <img src="@qrSrc" alt="QR thanh toán"
+                             style="width:230px;height:230px;border-radius:16px;border:1px solid #eee;" />
+                    </div>
+
+                    <div class="alert alert-light text-start mt-3">
+                        <p>• <strong>Bước 1:</strong> Mở ứng dụng ngân hàng hoặc ví điện tử.</p>
+                        <p>• <strong>Bước 2:</strong> Quét mã QR ở trên.</p>
+                        <p>• <strong>Bước 3:</strong> Nhập số tiền: <strong>@total.ToString("#,##0") ₫</strong></p>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="@Url.Action("Index","Home")" class="btn btn-success me-2">Về trang chủ</a>
+                        <a href="@Url.Action("Index","ShoppingCart")" class="btn btn-outline-secondary">Xem lại giỏ hàng</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
