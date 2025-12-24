@@ -36,6 +36,7 @@ export const patch = async (path, opption) => {
         },
         body: JSON.stringify(opption)
     })
-    const result = response.json();
+    if (response.status === 204) return true;
+    const result = await response.json();
     return result;
-}
+}   

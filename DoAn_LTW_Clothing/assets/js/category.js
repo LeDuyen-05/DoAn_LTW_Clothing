@@ -1,4 +1,4 @@
-﻿import { getCategoryDetail, getCategorietList, createCategorie, deleteCategorie } from "./Services/categoryServices.js"
+﻿import { getCategoryDetail, getCategorietList, createCategorie, deleteCategorie, editCategorie } from "./Services/categoryServices.js"
 
 const category = document.querySelector("#categorys");
 
@@ -34,27 +34,62 @@ window.handleDelete = (id) => {
     });
 }
 
+window.handleEdit = async (id) => {
+    // 1. Lấy dữ liệu
+    const item = await getCategoryDetail(id);
+
+    if (!item) return;
+
+    // 2. Đổ dữ liệu
+    document.getElementById('hiddenId').value = item.CategoryId;
+    document.getElementById('catName').value = item.CatName;
+    document.getElementById('catSlug').value = item.CatSlug;
+    document.getElementById('description').value = item.Description || "";
+    document.getElementById('groupId').value = item.GroupId;
+
+    document.querySelector('.modal-title').innerText = "Cập nhật danh mục";
+
+    // 3. Mở Modal bằng JS (Để đảm bảo có dữ liệu rồi mới hiện)
+    const modalElement = document.getElementById('categoryModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    modalInstance.show();
+}
+
 window.handleSave = async () => {
+    const id = document.getElementById('hiddenId').value;
     const catName = document.getElementById('catName').value;
     const catSlug = document.getElementById('catSlug').value;
     const description = document.getElementById('description').value;
-    const groupId = document.getElementById('groupId').value; 
+    const groupId = document.getElementById('groupId').value;
 
-    if (!catName || !catSlug) {
-        Swal.fire('Lỗi', 'Vui lòng điền đầy đủ thông tin!', 'error');
-        return;
+    let data;
+
+    let result = false;
+
+    if (id) {
+        data = {
+            CategoryId: id, 
+            CatName: catName,
+            CatSlug: catSlug,
+            Description: description,
+            GroupId: parseInt(groupId), 
+            SortOrder: 1,
+            IsActive: true,
+            CreatedAt: "2025/12/24" 
+        };
+        result = await editCategorie(id, data);
+    } else {
+        data = {
+            CatName: catName,
+            CatSlug: catSlug,
+            Description: description,
+            GroupId: parseInt(groupId), 
+            SortOrder: 1,
+            IsActive: true,
+            CreatedAt: "2025/12/24" 
+        };
+        result = await createCategorie(data);
     }
-
-    const data = {
-        CatName: catName,
-        CatSlug: catSlug,
-        Description: description,
-        GroupId: parseInt(groupId) 
-    };
-
-    console.log("Data gửi đi:", data); 
-
-    const result = await createCategorie(data);
 
     if (result) {
         const modalElement = document.getElementById('categoryModal');
@@ -63,19 +98,21 @@ window.handleSave = async () => {
 
         onReload();
 
+        // Reset form sạch sẽ
         document.getElementById('formCategory').reset();
+        document.getElementById('hiddenId').value = "";
 
         Swal.fire({
-            position: "center",
             icon: "success",
-            title: "Thêm mới thành công!",
-            showConfirmButton: false,
-            timer: 1500
+            title: id ? "Cập nhật thành công!" : "Thêm mới thành công!",
+            timer: 1500,
+            showConfirmButton: false
         });
     } else {
-        Swal.fire('Thất bại', 'Lỗi Server (kiểm tra lại GroupId hoặc dữ liệu nhập)', 'error');
+        Swal.fire('Thất bại', 'Lỗi Server (Kiểm tra lại dữ liệu)', 'error');
     }
 }
+
 
 const fetchAPI = async () => {
     const result = await getCategorietList();
