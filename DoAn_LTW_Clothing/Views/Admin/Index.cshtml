@@ -1,63 +1,113 @@
-﻿@model DoAn_LTW_Clothing.Models.HomeAdmin
-
+﻿@model IEnumerable<DoAn_LTW_Clothing.Models.Order>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Quản lý hệ thống";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<div class="d-flex align-items-center mb-4">
-    <div class="bg-warning rounded-circle d-flex justify-content-center align-items-center me-3 " style="width: 50px; height: 50px; color: white; Background: #1f3bb3 !important" >
-        <i class="fas fa-chart-line fa-lg "></i>
-    </div>
-    <div>
-        <h4 class="mb-0 fw-bold">Thống kê tổng quan</h4>
-        <small class="text-muted">Thông tin chung về hệ thống</small>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="home-tab">
+                <div class="tab-content tab-content-basic">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                @using (Html.BeginForm("Index", "Admin", FormMethod.Get, new { @class = "row g-3 align-items-end" }))
+                                {
+                                    <div class="col-auto">
+                                        <label>Từ ngày:</label>
+                                        <input type="date" name="fromDate" class="form-control" />
+                                    </div>
+                                    <div class="col-auto">
+                                        <label>Đến ngày:</label>
+                                        <input type="date" name="toDate" class="form-control" />
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary text-white">Lọc dữ liệu</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="statistics-details d-flex align-items-center justify-content-start">
+                                    <div class="me-5">
+                                        <p class="statistics-title">Tổng doanh thu (Đã giao)</p>
+                                        <h3 class="rate-percentage text-success">@String.Format("{0:0,0}", ViewBag.TotalRevenue) VNĐ</h3>
+                                    </div>
+                                    <div class="me-5">
+                                        <p class="statistics-title">Đơn hàng mới chờ duyệt</p>
+                                        <h3 class="rate-percentage text-warning">@ViewBag.NewOrdersCount</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 grid-margin stretch-card">
+                                <div class="card card-rounded">
+                                    <div class="card-body">
+                                        <h4 class="card-title card-title-dash">Danh sách đơn hàng cần xử lý</h4>
+                                        <div class="table-responsive mt-3">
+                                            <table class="table select-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Mã ĐH</th>
+                                                        <th>Khách hàng</th>
+                                                        <th>Số điện thoại</th>
+                                                        <th>Tổng tiền</th>
+                                                        <th>Ngày đặt</th>
+                                                        <th>Trạng thái hiện tại</th>
+                                                        <th>Cập nhật nhanh</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in Model)
+                                                    {
+                                                        <tr>
+                                                            <td><h6>#@item.OrderId</h6></td>
+                                                            <td><h6>@item.CustomerName</h6></td>
+                                                            <td><p>@item.Phone</p></td>
+                                                            <td><h6>@String.Format("{0:0,0}", item.TotalAmount) đ</h6></td>
+                                                            <td>@item.CreatedAt.Value.ToString("dd/MM/yyyy")</td>
+                                                            <td>
+                                                                @if (item.Status == "New")
+                                                                {<label class="badge badge-opacity-warning">Đơn mới</label> }
+                                                                else if (item.Status == "Shipping")
+                                                                { <label class="badge badge-opacity-primary">Đang giao</label> }
+                                                                else if (item.Status == "Delivered")
+                                                                { <label class="badge badge-opacity-success">Đã giao</label> }
+                                                                else
+                                                                { <label class="badge badge-opacity-danger">Đã hủy</label>}
+                                                            </td>
+                                                            <td>
+                                                                @using (Html.BeginForm("UpdateStatus", "Admin", FormMethod.Post, new { @class = "d-flex" }))
+                                                                {
+                                                                    <input type="hidden" name="orderId" value="@item.OrderId" />
+                                                                    <select name="status" class="form-select form-select-sm me-2" style="width:130px">
+                                                                        <option value="New" @(item.Status == "New" ? "selected" : "")>Mới</option>
+                                                                        <option value="Shipping" @(item.Status == "Shipping" ? "selected" : "")>Đang giao</option>
+                                                                        <option value="Delivered" @(item.Status == "Delivered" ? "selected" : "")>Đã giao</option>
+                                                                        <option value="Canceled" @(item.Status == "Canceled" ? "selected" : "")>Hủy</option>
+                                                                    </select>
+                                                                    <button type="submit" class="btn btn-primary btn-sm text-white">Lưu</button>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
-<div class="row g-3 mb-4">
-    <div class="col-md-3">
-        <div class="card stats-card h-100">
-            <div class="card-body">
-                <h6 class="card-title text-muted">Tổng sản phẩm</h6>
-                <div class="d-flex justify-content-between align-items-end">
-                    <h2 class="text-warning fw-bold mb-0 "  style="color: #1f3bb3 !important;">@Model.totalProduct</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card stats-card h-100">
-            <div class="card-body">
-                <h6 class="card-title text-muted">Tổng danh mục</h6>
-                <div class="d-flex justify-content-between align-items-end">
-                    <h2 class="text-warning fw-bold mb-0" style="color: #1f3bb3 !important;">@Model.totalCategory</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card stats-card h-100">
-            <div class="card-body">
-                <h6 class="card-title text-muted">Tổng đơn hàng</h6>
-                <div class="d-flex justify-content-between align-items-end">
-                    <h2 class="text-warning fw-bold mb-0" style="color: #1f3bb3 !important;">@Model.totalOrder</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card stats-card h-100">
-            <div class="card-body">
-                <h6 class="card-title text-muted">Tổng người dùng</h6>
-                <div class="d-flex justify-content-between align-items-end">
-                    <h2 class="text-warning fw-bold mb-0" style="color: #1f3bb3 !important;">@Model.totalApuser</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
